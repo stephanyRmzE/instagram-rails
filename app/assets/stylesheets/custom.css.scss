@@ -24,6 +24,12 @@
   width: 170px;
 }
 
+.instagram_text {
+  height: 55px;
+  padding: 25px 12px 0 0;
+
+}
+
 .logup-heading {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: 600;
@@ -67,7 +73,7 @@
 
 }
 
-.log-button {
+.button_insta {
   margin-top: 1rem;
   margin-bottom: 1rem;
   width: 270px;
@@ -81,9 +87,10 @@
   font-weight: 600;
 }
 
-.login-button:hover {
+.button_insta:hover {
 
   background-color: #3d96e8;
+  color: white;
 
 }
 
@@ -100,4 +107,74 @@
   font-weight: 500;
   text-decoration: none;
   color: #4a8bed;
+}
+
+.icons_navbar {
+  height: 22px;
+  stroke: black;
+  stroke-width: 30px;
+  margin-right: 1rem;
+  padding-left: 10px;
+}
+
+.add_post_img {
+  height: 80px;
+}
+
+.modal-size {
+  max-height: 898px;
+  max-width: 855px;
+  min-height: 391px;
+  min-width: 348px;
+  width: 498px;
+  height: 540px;
+  border-radius: 15px;
+}
+
+
+
+.links_navbar {
+  margin-left: 5px;
+  color: #000;
+  display: flex;
+  align-items: center;
+  border: none;
+  background-color: #00000000;
+  width: 100%;
+  height: 3em;
+
+}
+
+.links_navbar:hover {
+  text-decoration: none;
+  color: #000;
+  display: flex;
+  align-items: center;
+  background-color: #3737370c;
+  border-radius: 10px;
+
+  .icons_navbar {
+    height: 23px;
+    stroke-width: 38px;
+  }
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+}
+
+.preview_image{
+  height: 90%;
+  max-width: 100%;
+}
+
+.image_cropper{
+  max-height: 410px;
 }

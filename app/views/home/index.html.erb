@@ -1,40 +1,64 @@
-<% if user_signed_in? %>
-  <%= link_to "Log out", destroy_user_session_path, data: {"turbo-method": "delete"} %>
-<% end %>
-<div class="card-login">
-  <div class="card" style="width: 350px;">
 
-    <div class="card-center">
-      <img src="/assets/insta_letter.png" class="instagram_letters" alt="instagram logo">
+<div class="row">
+    <div class="col border">
+      <ul class="nav flex-column ps-1 pt-1">
+        <li class="nav-item ">
+          <a class="nav-link active" aria-current="page" href="/"><img src="/assets/insta_letter.png" class="instagram_text" alt="instagram logo"></a>
+        </li>
+        <li class="nav-item">
 
 
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "custom-form" })  do |f| %>
-        <div class="form-field">
-          <%= f.text_field :login, autofocus: true, placeholder: "Username or Email", class: "form-text" %>
-        </div>
+        <button type="button" class="links_navbar" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <%= render_icon 'add_post', classes: 'icons_navbar' %>Create
+        </button>
 
-        <div class="form-field">
-          <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "form-text" %>
-        </div>
+          <!-- Modal -->
+          <div class="modal fade mt-5" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content modal-size">
+                <div class="modal-header justify-content-center p-2">
+                  <p class="modal-title fs-6 fw-semibold" id="staticBackdropLabel">Create new post</p>
+                </div>
+                <div class="modal-body">
 
-        <div class="actions">
-          <%= f.submit "Log in", class: "log-button" %>
-        </div>
-      <% end %>
 
-      <hr class="w-75" />
+                  <%= form_with model: Post.new, data: { controller: "uppy-file-upload" } do |f| %>
+                    <div data-action="dragover->uppy-file-upload#handleDragOver dragleave->uppy-file-upload#handleDragLeave drop->uppy-file-upload#handleDrop" class="drag-drop-zone">
+                      <div class="modal-body" data-target="uppy-file-upload.dragOpen" >
+                        <%= render_icon 'pics_videos', classes: 'add_post_img' %>
+                        <p class="mt-3 fs-5">Drag photos and videos here</p>
 
-      <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-        <%= link_to "Forgot your password?", new_password_path(resource_name), class: "login-forgot" %><br />
-      <% end %>
+                        <%= f.file_field :photo, as: :file, style: "display: none;", data: { target: 'uppy-file-upload.fileInput' } %>
+
+                        <button data-action="click->uppy-file-upload#openFinder" type="button" class="button_insta px-3 w-auto">Select from computer</button>
+                      </div>
+                      <div class="image_cropper">
+                        <img class="preview_image" id="image" data-target="uppy-file-upload.imagePreview" style="display: none;">
+                      </div>
+                      <%= f.submit "Upload image", "data-uppy-file-upload-target": "submit" , class: "button_insta px-3 w-auto", style: "display: none;" %>
+                    </div>
+                  <% end %>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </li>
+
+        <li class="nav-item">
+          <%= link_to "Log out", destroy_user_session_path, data: {"turbo-method": "delete"} %>
+        </li>
+
+      </ul>
+
 
     </div>
-  </div>
-  <div class="card mt-2" style="width: 350px;">
-
-    <div class="card-body">
-      <p class="login-text">Don't have an account? <%= link_to "Sign up", new_registration_path(resource_name) , class: "login-signup"  %><br /></p>
-
+    <div class="col-7 border">
+      2 of 3 (wider)
+    </div>
+    <div class="col-3 border">
+      3 of 3
     </div>
   </div>
-</div>

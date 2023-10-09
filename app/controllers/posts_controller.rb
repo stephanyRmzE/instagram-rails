@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_post, only: %i[ show edit update destroy ]
 
   # GET /posts
@@ -22,11 +23,14 @@ class PostsController < ApplicationController
   # POST /posts
   def create
     @post = Post.new(post_params)
+    @post.user = current_user
 
     if @post.save
-      redirect_to @post, notice: "Post was successfully created."
+      redirect_to post_path(@post), notice: "Post was successfully created."
     else
-      render :new, status: :unprocessable_entity
+      Rails.logger.error(@post.errors.full_messages.to_sentence)
+      redirect_to root_path, status: :unprocessable_entity
+
     end
   end
 
@@ -35,6 +39,7 @@ class PostsController < ApplicationController
     if @post.update(post_params)
       redirect_to @post, notice: "Post was successfully updated.", status: :see_other
     else
+
       render :edit, status: :unprocessable_entity
     end
   end
@@ -53,6 +58,7 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:user_id)
+      params.require(:post).permit(  :photo)
     end
+
 end

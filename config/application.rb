@@ -24,6 +24,12 @@ module InstagramRails
     config.load_defaults 7.0
 
     # Configuration for the application, engines, and railties goes here.
+    # Configuración de Cloudinary
+    config.cloudinary = {
+      cloud_name: ENV['CLOUDINARY_CLOUD_NAME'],
+      api_key: ENV['CLOUDINARY_API_KEY'],
+      api_secret: ENV['CLOUDINARY_API_SECRET']
+    }
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.

@@ -6,6 +6,7 @@ ruby '3.2.2'
 gem 'rails', '~> 7.0.6'
 
 gem 'bootsnap', require: false # Reduces boot times through caching; required in config/boot.rb
+gem "cloudinary"
 gem 'cssbundling-rails' # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem 'devise'
 gem "dotenv-rails"
