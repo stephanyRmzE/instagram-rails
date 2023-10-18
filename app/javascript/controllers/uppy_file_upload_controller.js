@@ -1,17 +1,16 @@
-// app/javascript/controllers/uppy_file_upload_controller.js
-
 import { Controller } from "@hotwired/stimulus"
 import Uppy from '@uppy/core';
-import XHRUpload from '@uppy/xhr-upload';
-import Cropper from 'cropperjs';
-import '@uppy/core/dist/style.min.css';
-import 'cropperjs/dist/cropper.css';
+import Dashboard from '@uppy/dashboard';
+import ImageEditor from "@uppy/image-editor";
+import ActiveStorageUpload from '@excid3/uppy-activestorage-upload';
+import "@uppy/core/dist/style.css";
+import "@uppy/dashboard/dist/style.css";
+import "@uppy/image-editor/dist/style.css";
 
 
 
 export default class extends Controller {
-  static targets = ['fileInput', 'imagePreview', 'dragOpen', 'submit'];
-
+  static targets = ['fileInput', 'imagePreview', 'dragOpen', 'submit', 'dashPreview'];
 
   connect() {
     console.log("uppyyyyyy")
@@ -19,49 +18,68 @@ export default class extends Controller {
   }
 
   initializeUppy() {
-    const { cloud_name, api_key, api_secret } = Rails.application.config.cloudinary;
+
     const uppy = new Uppy({
-      autoProceed: true,
+      debug: true,
+      autoProceed: false,
       restrictions: {
         maxFileSize: 5 * 1024 * 1024, // Límite de tamaño de archivo de 5 MB
         allowedFileTypes: ['image/*'],
+        maxNumberOfFiles: 1,
       },
-      uploader: XHRUpload,
-      meta: {
-        // Establece el nombre del preset y la carpeta de Cloudinary (ajusta según tus necesidades)
-        cloudinary_preset: 'instagram_rails',
-        folder: 'instagram_rails',
-      },
-    })
 
-    uppy.use(Uppy.Cloudinary, {
-      cloudName: cloud_name,
-      apiKey: api_key,
-      apiSecret: api_secret,
     });
+
+    uppy.use(Dashboard, {
+      trigger: '#UppyModalOpenerBtn',
+      inline: true,
+      target: '#DashboardContainer',
+      replaceTargetContent: true,
+      height: 400,
+      width: 300,
+      browserBackButtonClose: true,
+      hideUploadButton: true,
+
+    });
+
+    uppy.use(ActiveStorageUpload, {
+      directUploadUrl: document.querySelector("meta[name='direct-upload-url']").getAttribute("content")
+    });
+
+    uppy.use(ImageEditor, { target: Dashboard });
+
 
     uppy.on('complete', (result) => {
       console.log('Upload complete:', result);
       const fileData = result.successful[0];
-      const cloudinaryUrl = fileData.response.body.url;
-      this.fileInputTarget.value = cloudinaryUrl;
+      console.log('Uploaded', fileData);
     });
 
-    uppy.on('file-added', (file) => {
-      console.log('filename:', file);
-      this.readAndDisplayImagePreview(file);
+
+
+    uppy.on('file-editor:start', (file) => {
+      console.log('file-editor:start');
+      console.log(file);
     });
+
+    uppy.on('file-editor:complete', (updatedFile) => {
+      console.log('file-editor:complete');
+      console.log(updatedFile);
+      this.updateFileInput(updatedFile);
+    });
+
+    this.uppy = uppy;
+
   }
 
   openFinder() {
     this.fileInputTarget.click();
 
     this.fileInputTarget.addEventListener('change', (event) => {
+      console.log('Archivos seleccionados:', event.target.files);
       const selectedFile = event.target.files[0];
-      console.log('filename:', selectedFile);
-      if (selectedFile) {
-        this.readAndDisplayImagePreview(selectedFile);
-      }
+      this.openEditor(selectedFile);
+
     });
   }
 
@@ -84,7 +102,8 @@ export default class extends Controller {
 
     // Maneja los archivos soltados aquí
     console.log('Archivos soltados:', droppedFiles);
-    this.readAndDisplayImagePreview(droppedFiles[0]);
+    const selectedFile = droppedFiles[0];
+    this.openEditor(selectedFile);
 
     // También puedes agregar los archivos soltados al campo de entrada de archivos para su envío
     if (droppedFiles.length > 0) {
@@ -92,38 +111,34 @@ export default class extends Controller {
     }
   }
 
-  readAndDisplayImagePreview(file) {
-    // Usar FileReader para leer la imagen seleccionada y mostrar la vista previa
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageDataURL = e.target.result;
-      this.displayImagePreview(imageDataURL);
-    };
-    reader.readAsDataURL(file);
+  openEditor(data) {
+    const dashPreviewElement = this.dashPreviewTarget;
+    const submitElement = this.submitTarget;
+    const cardDragElement = this.dragOpenTarget
+    cardDragElement.style.display = 'none';
+    uppy.addFile({
+      name: data.name, // You can specify any name you like
+      type: data.type,
+      data: data,
+    });
+
+    dashPreviewElement.style.display = 'block';
+    submitElement.style.display = 'block';
   }
 
-  displayImagePreview(dataURL) {
-    const imagePreviewElement = this.imagePreviewTarget;
-    const cardDragElement = this.dragOpenTarget
-    const submitElement = this.submitTarget
-    const image = document.getElementById('image');
-    if (imagePreviewElement) {
-      imagePreviewElement.src = dataURL;
-      imagePreviewElement.style.display = 'block';
-      submitElement.style.display = 'block';
-      cardDragElement.style.display = 'none';
-      const cropper = new Cropper(image, {
-        viewMode: 1,
-        crop(event) {
-          console.log(event.detail.x);
-          console.log(event.detail.y);
-          console.log(event.detail.width);
-          console.log(event.detail.height);
-          console.log(event.detail.rotate);
-          console.log(event.detail.scaleX);
-          console.log(event.detail.scaleY);
-        },
-      });
-    }
+  updateFileInput(file) {
+    const editedFile = new File([file.data], file.name, { type: 'image/jpeg', lastModified: file.lastModified });
+
+    const fileList = new DataTransfer();
+    fileList.items.add(editedFile);
+
+    this.fileInputTarget.files = fileList.files;
+
   }
+
+  submitImage() {
+    uppy.upload();
+  }
+
+
 }

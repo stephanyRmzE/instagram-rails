@@ -24,12 +24,16 @@ module InstagramRails
     config.load_defaults 7.0
 
     # Configuration for the application, engines, and railties goes here.
-    # Configuración de Cloudinary
-    config.cloudinary = {
-      cloud_name: ENV['CLOUDINARY_CLOUD_NAME'],
-      api_key: ENV['CLOUDINARY_API_KEY'],
-      api_secret: ENV['CLOUDINARY_API_SECRET']
-    }
+
+
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'http://localhost:3000' # Replace with the actual origin of your client app
+        resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options]
+      end
+    end
+
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.

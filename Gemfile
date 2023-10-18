@@ -13,6 +13,7 @@ gem "dotenv-rails"
 gem 'jsbundling-rails' # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
+gem 'rack-cors', require: 'rack/cors'
 gem 'redis', '~> 4.0'
 gem 'sassc-rails' # Use Sass to process CSS
 gem 'sprockets-rails'
