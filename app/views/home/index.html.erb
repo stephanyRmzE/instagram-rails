@@ -8,7 +8,7 @@
         <li class="nav-item">
 
 
-        <button type="button" class="links_navbar" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" id="UppyModalOpenerBtn" class="links_navbar" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <%= render_icon 'add_post', classes: 'icons_navbar' %>Create
         </button>
 
@@ -21,21 +21,19 @@
                 </div>
                 <div class="modal-body">
 
-
                   <%= form_with model: Post.new, data: { controller: "uppy-file-upload" } do |f| %>
                     <div data-action="dragover->uppy-file-upload#handleDragOver dragleave->uppy-file-upload#handleDragLeave drop->uppy-file-upload#handleDrop" class="drag-drop-zone">
                       <div class="modal-body" data-target="uppy-file-upload.dragOpen" >
+
                         <%= render_icon 'pics_videos', classes: 'add_post_img' %>
                         <p class="mt-3 fs-5">Drag photos and videos here</p>
-
                         <%= f.file_field :photo, as: :file, style: "display: none;", data: { target: 'uppy-file-upload.fileInput' } %>
 
                         <button data-action="click->uppy-file-upload#openFinder" type="button" class="button_insta px-3 w-auto">Select from computer</button>
                       </div>
-                      <div class="image_cropper">
-                        <img class="preview_image" id="image" data-target="uppy-file-upload.imagePreview" style="display: none;">
-                      </div>
-                      <%= f.submit "Upload image", "data-uppy-file-upload-target": "submit" , class: "button_insta px-3 w-auto", style: "display: none;" %>
+                      <div id="DashboardContainer" style="display: none;" data-target="uppy-file-upload.dashPreview" ></div>
+                      
+                      <%= f.submit "Upload image", data: { action: "click->uppy-file-upload#submitImage", target: 'uppy-file-upload.submit'}, class: "button_insta px-3 w-auto", style: "display: none;" %>
                     </div>
                   <% end %>
 

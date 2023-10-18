@@ -8,8 +8,11 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/uppy/3.17.0/uppy.css" rel="stylesheet">
+    <link href="https://releases.transloadit.com/uppy/v3.17.0/uppy.min.css" rel="stylesheet">
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
     <%= favicon_link_tag asset_path('insta_icon.png') %>
+    <%= tag.meta name: "direct-upload-url", content: rails_direct_uploads_path %>
   </head>
 
   <body>
